@@ -1,0 +1,28 @@
+.css-nav{
+    box-shadow:0px 0px 10px rgba(0,0,0,1);
+    background-color: #bab9b9;
+}
+
+.css-nav ul li:not(:last-child):after{
+    content: " | ";
+}
+
+.css-nav a{
+    color: black;
+}
+
+.css-footer{
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.5);
+    background-color: #bab9b9;
+}
+
+.datos{
+    color: black;
+}
+
+.red{
+    background: url(../image/sprite2.png) no-repeat -53px -45px;
+    overflow: hidden;
+    text-indent: -200px;
+    border-radius: 50px;
+}
