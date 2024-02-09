@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from cloudinary.models import CloudinaryField
 
 
 # Create your models here.
@@ -49,12 +50,6 @@ class Proyecto(models.Model):
         return self.nombre
 
 class ImagenesProyecto(models.Model):
-    imagen = models.ImageField(
-        validators=[
-            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
-        ],
-        upload_to='imagenes',
-        default='imagen',
-    )
+    imagen = CloudinaryField('imagen')
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
 
