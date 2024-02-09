@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-lb#st91-o1!#&1g(s2v717ef97yyb93guc!^r^8*t^4#4zx_5%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'https://front-estudio-aquitectura.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'https://estudio-aquitectura.vercel.app']
 
 
 # Application definition
@@ -146,8 +146,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS_ALLOW_CREDENTIALS = True
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-CSRF_ALLOWED_ORIGINS = [ "http://localhost:5173",  'https://front-estudio-aquitectura.vercel.app' ]
-CORS_ORIGIN_WHITELIST = ['http://localhost:5173', 'https://front-estudio-aquitectura.vercel.app']
+CSRF_ALLOWED_ORIGINS = [ "http://localhost:5173",  'https://estudio-aquitectura.vercel.app' ]
+CORS_ORIGIN_WHITELIST = ['http://localhost:5173', 'https://estudio-aquitectura.vercel.app']
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'files')
 MEDIA_URL = '/files/' #Sirve los archivos multimedia dentro de esta carpeta
