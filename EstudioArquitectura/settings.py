@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lb#st91-o1!#&1g(s2v717ef97yyb93guc!^r^8*t^4#4zx_5%'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'Sitio',
 ]
@@ -143,11 +144,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # # cors authorization
-# CORS_ALLOW_CREDENTIALS = True
 
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-CSRF_ALLOWED_ORIGINS = [ "http://localhost:5173",  'https://estudio-aquitectura.vercel.app' ]
-CORS_ORIGIN_WHITELIST = ['http://localhost:5173', 'https://estudio-aquitectura.vercel.app']
+CSRF_ALLOWED_ORIGINS = [ "http://localhost:5173", 'http://127.0.0.1:8000', 'https://estudio-aquitectura.vercel.app' ]
+CSRF_TRUSTED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:8000', 'https://estudio-aquitectura.vercel.app' ]
+CORS_ALLOWED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:8000', 'https://estudio-aquitectura.vercel.app' ]
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'files')
 MEDIA_URL = '/files/' #Sirve los archivos multimedia dentro de esta carpeta

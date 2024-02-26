@@ -1,7 +1,11 @@
 from rest_framework.exceptions import NotFound
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
-from .serializer import ArquitectoSerealizer, ClienteSerealizer, ProyectoSerealizer, EstudioSerealizer
+from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+
+from .serializer import ArquitectoSerealizer, ClienteSerealizer, ProyectoSerealizer, EstudioSerealizer, UserSerializer
 from .models import Arquitecto, Cliente, Estudio, Proyecto, ImagenesProyecto
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -9,6 +13,9 @@ from .models import ImagenesProyecto, Proyecto
 from random import sample
 from .token import ProjectTokenGenerator, ClientTokenGenerator
 from rest_framework import status
+import cloudinary
+
+from django.views.decorators.csrf import csrf_exempt
 
 
 #Va a realizar todo el CRUD del arquitecto
@@ -151,28 +158,16 @@ def obtener_imagenes_proyecto(request,tk_project):
 
     return JsonResponse(data)
 
+@csrf_exempt
 def borrar_imagen(request, img, tk_project):
-    try:
-        # Obtener el proyecto asociado al token
-        project = Proyecto.objects.get(token=tk_project)
-        
-        # Obtener la imagen que se va a eliminar
-        imagen_a_borrar = ImagenesProyecto.objects.get(
-            proyecto=project,
-            imagen__icontains=img
-        )
-        
-        # Eliminar la imagen
-        imagen_a_borrar.delete()
-        
-        # Devolver una respuesta exitosa
-        return JsonResponse({'mensaje': 'Imagen eliminada correctamente'})
-    except Proyecto.DoesNotExist:
-        return JsonResponse({'error': 'El proyecto no existe'}, status=404)
-    except ImagenesProyecto.DoesNotExist:
-        return JsonResponse({'error': 'La imagen no existe'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    proyecto = get_object_or_404(Proyecto, token=tk_project)
+    imagen = ImagenesProyecto.objects.filter(proyecto=proyecto, imagen=img)
+    
+    cloudinary.uploader.destroy(imagen.imagen.public_id)
+    imagen.delete()
+    
+    print('aca')
+
     
 def buscar_imagenes(resquest):
     images = ImagenesProyecto.objects.all()
@@ -237,6 +232,26 @@ def proyectos_publicos(request):
     
     return JsonResponse(serialized_project, safe=False)
 
+@api_view(['POST'])
+def login(request):
+    user = get_object_or_404(User, username=request.data['username'])
+    if not user.check_password(request.data['password']):
+        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+    token, created = Token.objects.get_or_create(user=user)
+    serializer = UserSerializer(instance=user)
+    
+    return Response({'token':token.key, 'user':serializer.data})
+
+
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication,TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def test(request):
+    return Response({'detail':"Passed!"})
     
     
     

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Arquitecto, Cliente, Estudio, Proyecto, ImagenesProyecto
+from django.contrib.auth.models import User
 
 
 #Vamos a convertir los tipos de datos de Python a Json
@@ -28,3 +29,8 @@ class ImagenesProyectoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImagenesProyecto
         fields = ('imagen', 'proyecto')
+        
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password', 'email']
