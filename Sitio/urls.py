@@ -19,7 +19,7 @@ urlpatterns = [
     path('api/imagenesGallery', views.buscar_imagenes, name='buscar-imagenes-galeria'),
     path('api/destacados/', views.proyectos_destacados, name='proyectos-destacados'),
     path('api/proyectos/publicos', views.proyectos_publicos, name='proyectos-publicos'),
-    re_path('login', views.login, name='login'),
-    re_path('test', views.test, name='test'),
+    # re_path('login', views.login, name='login'),
+    # re_path('test', views.test, name='test'),
     
 ]
