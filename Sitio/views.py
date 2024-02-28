@@ -14,7 +14,6 @@ from random import sample
 from .token import ProjectTokenGenerator, ClientTokenGenerator
 from rest_framework import status
 import cloudinary
-
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -27,7 +26,6 @@ class ArquitectoView(viewsets.ModelViewSet):
 class ClienteView(viewsets.ModelViewSet):
     serializer_class = ClienteSerealizer
     queryset = Cliente.objects.all()
-    
     
     def perform_create(self, serializer):
         cliente = serializer.save()
@@ -84,7 +82,10 @@ class ProyectoView(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         # Eliminar las imágenes asociadas al proyecto
         imagenes_proyecto = ImagenesProyecto.objects.filter(proyecto=instance)
-        imagenes_proyecto.delete()
+        for img in imagenes_proyecto:
+            print(type(img))
+            cloudinary.uploader.destroy(img.imagen.public_id)
+            img.delete()
 
         # Finalmente, eliminar el proyecto
         instance.delete()
@@ -93,7 +94,6 @@ class ProyectoView(viewsets.ModelViewSet):
         proyecto = serializer.save()
         
         imagenes = self.request.FILES.getlist('imagenes[]')
-
         for imagen in imagenes:
             ImagenesProyecto.objects.create(proyecto=proyecto, imagen=imagen)
         
