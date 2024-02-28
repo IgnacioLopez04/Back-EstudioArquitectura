@@ -89,6 +89,14 @@ class ProyectoView(viewsets.ModelViewSet):
         # Finalmente, eliminar el proyecto
         instance.delete()
         
+    def perform_update(self, serializer):
+        proyecto = serializer.save()
+        
+        imagenes = self.request.FILES.getlist('imagenes[]')
+
+        for imagen in imagenes:
+            ImagenesProyecto.objects.create(proyecto=proyecto, imagen=imagen)
+        
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
         lookup_field = 'token'  # Utiliza el campo por el cual quieres buscar
