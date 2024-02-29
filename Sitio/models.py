@@ -52,4 +52,4 @@ class Proyecto(models.Model):
 class ImagenesProyecto(models.Model):
     imagen = CloudinaryField('imagen')
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
-
+    

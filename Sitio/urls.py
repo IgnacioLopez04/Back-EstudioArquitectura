@@ -1,6 +1,11 @@
 from django.urls import path, include, re_path
 from rest_framework import routers
 from . import views
+from .views import MyTokenObtainPairView
+
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 
 #versiones de api
@@ -19,7 +24,7 @@ urlpatterns = [
     path('api/imagenesGallery', views.buscar_imagenes, name='buscar-imagenes-galeria'),
     path('api/destacados/', views.proyectos_destacados, name='proyectos-destacados'),
     path('api/proyectos/publicos', views.proyectos_publicos, name='proyectos-publicos'),
-    # re_path('login', views.login, name='login'),
-    # re_path('test', views.test, name='test'),
+    path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
 ]

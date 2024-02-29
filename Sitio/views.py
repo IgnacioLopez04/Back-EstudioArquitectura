@@ -16,6 +16,12 @@ from rest_framework import status
 import cloudinary
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
 
 #Va a realizar todo el CRUD del arquitecto
 class ArquitectoView(viewsets.ModelViewSet):
@@ -154,7 +160,7 @@ class EstudioView(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
-    
+ 
 def obtener_imagenes_proyecto(request,tk_project):
     proyecto = get_object_or_404(Proyecto, token=tk_project)
     imagenes = ImagenesProyecto.objects.filter(proyecto=proyecto)
@@ -166,7 +172,9 @@ def obtener_imagenes_proyecto(request,tk_project):
 
     return JsonResponse(data)
 
-@csrf_exempt
+# @csrf_exempt
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def borrar_imagen(request, img, tk_project):
     proyecto = get_object_or_404(Proyecto, token=tk_project)
     imagen = ImagenesProyecto.objects.filter(proyecto=proyecto)
@@ -178,7 +186,7 @@ def borrar_imagen(request, img, tk_project):
     cloudinary.uploader.destroy(imagen.imagen.public_id)
     imagen.delete()
     return JsonResponse({'detail':'Imagen eliminada'}, status=status.HTTP_200_OK)
-    
+
 def buscar_imagenes(resquest):
     images = ImagenesProyecto.objects.all()
     if not images:
@@ -242,27 +250,16 @@ def proyectos_publicos(request):
     
     return JsonResponse(serialized_project, safe=False)
 
-# @api_view(['POST'])
-# def login(request):
-#     user = get_object_or_404(User, username=request.data['username'])
-#     if not user.check_password(request.data['password']):
-#         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-#     token, created = Token.objects.get_or_create(user=user)
-#     serializer = UserSerializer(instance=user)
-    
-#     return Response({'token':token.key, 'user':serializer.data})
+# Extiende la forma en la que serializamos el token
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
 
+        # Add custom claims
+        token['username'] = user.username
 
-# from rest_framework.decorators import authentication_classes, permission_classes
-# from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated
-
-# @api_view(["GET"])
-# @authentication_classes([SessionAuthentication,TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def test(request):
-#     return Response({'detail':"Passed!"})
+        return token
     
-    
-    
-    
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
