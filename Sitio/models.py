@@ -8,7 +8,7 @@ class Arquitecto(models.Model):
     nombre = models.CharField(max_length=200)
     apellido = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    telefono = models.IntegerField(null=True)
+    telefono = models.CharField(max_length=200, null=True)
     
     def __str__(self):
         return self.nombre
