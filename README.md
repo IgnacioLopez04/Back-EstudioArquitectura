@@ -1,2 +1,2 @@
 # Back-EstudioArquitectura
-Aca se encuentra todo lo relacionado con el backend del estudio de arquitectura.
+Se realizó un CRUD, de los proyectos y clientes de un estudio de arquitectura, todo a través del uso de APIs con Django Rest Framework. 
